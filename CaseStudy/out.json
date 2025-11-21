@@ -1,0 +1,8 @@
+[
+    {
+        "input_seq_len": 48,
+        "output_seq_len": 24,
+        "shift": 12,
+        "MSE": 0.18892510886396374
+    }
+]

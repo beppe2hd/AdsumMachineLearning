@@ -1,10 +1,34 @@
 import pandas as pd
-
-
-
 import pandas as pd
 import mysql.connector
 from mysql.connector import Error
+
+def read_data(host, user, password, database, start_dt, end_dt): 
+    
+    conn = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=password,
+            database=database
+        )
+
+    cursor = conn.cursor(dictionary=True)
+
+
+    query = """
+    SELECT datetime, s_a, s_b, irr, LAI
+    FROM sensor_data
+    WHERE datetime BETWEEN %s AND %s
+    ORDER BY datetime ASC;
+    """
+
+    cursor.execute(query, (start_dt, end_dt))
+    rows = cursor.fetchall()
+
+    cursor.close()
+    conn.close()
+
+    return rows
 
 def save_dataset_to_mysql(df, host, user, password, database, table_name="data_table"):
     """
@@ -58,20 +82,34 @@ def save_dataset_to_mysql(df, host, user, password, database, table_name="data_t
 # --- Example usage ---
 if __name__ == "__main__":
 
-    df = pd.read_csv("field_f6")
-    df = df[['datetime','s_a','s_b','irr','LAI']]
-    df['datetime'] = pd.to_datetime(df['datetime'])
-    df['datetime'] = df['datetime'] + pd.DateOffset(months=9)
+    
+    # df = pd.read_csv("field_f6")
+    # df = df[['datetime','s_a','s_b','irr','LAI']]
+    # df['datetime'] = pd.to_datetime(df['datetime'])
+    # df['datetime'] = df['datetime'] + pd.DateOffset(months=9)
 
-    # Save to database
-    save_dataset_to_mysql(
-        df,
+    # # Save to database
+    # save_dataset_to_mysql(
+    #     df,
+    #     host="localhost",
+    #     user="root",
+    #     password="password",
+    #     database="sensors",
+    #     table_name="sensor_data"
+    # )
+
+    rows = read_data(
         host="localhost",
         user="root",
         password="password",
-        database="sensors",
-        table_name="sensor_data"
-    )
+        database="sensors", 
+        start_dt="2025-11-21 00:00:00",
+        end_dt="2025-11-23 00:00:00"
+        )
+    
+    for r in rows:
+        print(r)
+
 
 
 

@@ -9,7 +9,7 @@ cache_session = requests_cache.CachedSession('.cache', expire_after = -1)
 retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
 openmeteo = openmeteo_requests.Client(session = retry_session)
 
-features = ["temperature_2m", "relative_humidity_2m", "dew_point_2m", "rain", "snowfall", "wind_speed_10m", "wind_speed_100m"]
+features = ["temperature_2m","relative_humidity_2m","cloud_cover","wind_speed_10m","wind_direction_100m","soil_temperature_0_to_7cm","soil_temperature_7_to_28cm","soil_temperature_28_to_100cm","rain","precipitation","evapotranspiration"]
 
 # Make sure all required weather variables are listed here
 # The order of variables in hourly or daily is important to assign them correctly below
